@@ -1,0 +1,88 @@
+<!DOCTYPE html> 
+<html>
+    
+<head>
+	<title>Login Page</title>
+	<link rel="stylesheet" type="text/css" href="css/styles.css">
+   
+</head>
+<body>
+    <div class="kotak_login">
+        <div className="container">
+        <h2>Login to your Account</h2>
+         </div>
+         <form id="inputform" name="inputform"  method="post" onsubmit="return validasi();" >
+ 
+         <label>Email Address</label>
+         <input type="email"  class="form_login" placeholder="Email@example.com" name="email" id="email" required /> 
+ 
+         <label>Password</label>
+         <input type="password" name="password" id="password" class="form_login" placeholder="********" required></input>
+            
+         <input type="submit"  class="tombol_login" value="Login"  /> 
+         Don't have an account ? <a href="register.html"> Register</a>
+         </form>
+     </div> 
+</body>
+<script > 
+    function validasi() { 
+		var email = document.getElementById("email").value;
+		var password = document.getElementById("password").value;
+		if (email != "" && password!="" ) {
+            var data= emailIsValid(email);
+              if(data=='valid'){ 
+                    if(password.length <8) {
+                        //alert('Minimal password 8 karakter');
+                        console.log('Minimal password 8 karakter');
+                        
+                    } else { 
+                        var data = new FormData();
+                        data.append('email', email);
+                        data.append('password', password);
+                        var xhr = new XMLHttpRequest();
+                        xhr.onload = function(){ 
+                        //alert (xhr.responseText); 
+                        var text = xhr.responseText;
+                        obj = JSON.parse(text);  
+                        if(obj.value==1){ 
+                        console.log("Selamat datang "+obj.result[0].email) ;
+                        }else if(obj.value==0 && obj.Read==0 ){ 
+                            console.log("Password Salah" ) ; 
+                        }else if(obj.value==0 && obj.Read==1 ){ 
+                            console.log("email tidak terdaftar" ) ; 
+                        }
+                                //document.querySelector('#tampilan').innerHTML = hasil;
+                        
+                        } // success case
+                        xhr.onerror = function(){
+                        alert (xhr.responseText); 
+                        } // failure case
+                        xhr.open('POST', '/test/registrasi/Api/api/Login')  
+                        xhr.send (data);
+                        return false;
+                      
+                    }
+              }else{
+                console.log('Periksa kembali format email');
+                //alert('Pastikan email valid dan Periksa kembali format email');
+              }
+		}else{
+            console.log('Anda harus mengisi data dengan lengkap !');
+			//alert('Anda harus mengisi data dengan lengkap !');
+		}
+	}
+
+    function emailIsValid (email) {
+        var atps=email.indexOf("@");
+        var dots=email.lastIndexOf(".");
+        if (atps<1 || dots<atps+2 || dots+2>=email.length) {
+            
+            return false;
+        } else {
+            return "valid";
+        }
+    }
+
+ 
+</script>
+</html>

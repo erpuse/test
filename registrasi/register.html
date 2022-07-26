@@ -1,0 +1,98 @@
+<!DOCTYPE html> 
+<html>
+    
+<head>
+	<title>Register Page</title>
+	<link rel="stylesheet" type="text/css" href="css/styles.css">
+   
+</head>
+<body>
+    <div class="kotak_login">
+        <div className="container">
+        <h2>Create Your Account</h2>
+         </div>
+         <form id="inputform" name="inputform"  method="post" onsubmit="return validasi();" >
+ 
+         <label>First Name</label>
+         <input type="text"  class="form_login" placeholder="First Name" name="first" id="first" required /> 
+ 
+         <label>Last Name</label>
+         <input type="text"  class="form_login" placeholder="Last Name" name="last" id="last" required /> 
+ 
+         <label>Email Address</label>
+         <input type="email"  class="form_login" placeholder="Example@gmail.com" name="email" id="email" required /> 
+  
+         <label>Password</label>
+         <input type="password" name="password" id="password" class="form_login" placeholder="********" required></input>
+            
+         <input type="checkbox"  Checked/> To register us please tick to agree to our <a href="#">Term and Conditions</a>
+         <input type="submit"  class="tombol_login" value="Register"  /> 
+         Already have an account ?<a href="index.html"> Sign in</a>
+         </form>
+     </div> 
+</body>
+<script > 
+    function validasi() { 
+		var first = document.getElementById("first").value;
+		var last = document.getElementById("last").value;
+		var email = document.getElementById("email").value;
+		var password = document.getElementById("password").value;
+		if (first != "" && last!="" && email != "" && password!="") {
+            var data= emailIsValid(email);
+              if(data=='valid'){ 
+               
+                    if(password.length <8) {
+                        //alert('Minimal password 8 karakter');
+                        console.log('Minimal password 8 karakter'); 
+                        return false;
+                    } else { 
+                        var data = new FormData();
+                        data.append('first', first);
+                        data.append('last', last);
+                        data.append('email', email);
+                        data.append('password', password);
+                        var xhr = new XMLHttpRequest();
+                        xhr.onload = function(){ 
+                        //alert (xhr.responseText); 
+                        var text = xhr.responseText;
+                        obj = JSON.parse(text);  
+                        if(obj.success==1){ 
+                        console.log(obj.message) ;
+                        }else { 
+                            console.log(obj.message ) ; 
+                        }
+                                //document.querySelector('#tampilan').innerHTML = hasil;
+                        
+                        } // success case
+                        xhr.onerror = function(){
+                        alert (xhr.responseText); 
+                        } // failure case
+                        xhr.open('POST', '/test/registrasi/Api/api/Register')  
+                        xhr.send (data);
+                        return false;
+                      
+                    }
+              }else{
+                console.log('Periksa kembali format email');
+                //alert('Pastikan email valid dan Periksa kembali format email');
+              }
+		}else{
+            console.log('Anda harus mengisi data dengan lengkap !');
+			//alert('Anda harus mengisi data dengan lengkap !');
+		}
+	}
+
+    function emailIsValid (email) {
+        var atps=email.indexOf("@");
+        var dots=email.lastIndexOf(".");
+        if (atps<1 || dots<atps+2 || dots+2>=email.length) {
+            
+            return false;
+        } else {
+            return "valid";
+        }
+    }
+
+ 
+</script>
+</html>
